@@ -1,0 +1,42 @@
+[tool.poetry]
+name = "xml-extractor"
+version = "0.1.0"
+description = ""
+authors = ["Panurat Sangchai <52658155+Panurat1810@users.noreply.github.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+pandas = "^2.0.0"
+numpy = "^1.24.0"
+bs4 = "^0.0.2"
+lxml = "^5.1.0"
+isort = "^5.13.2"
+black = "^24.2.0"
+pre-commit = "^2.20.0"
+flake8 = "^5.0.1"
+flake8-annotations = "^2.9.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 120
+include = '\.pyi?$'
+exclude = '''
+/(
+   \.git
+  | \.tox
+  | build
+  | migrations
+  | .venv
+)/
+'''
+
+[tool.flake8]
+max-line-length = 120
+
+[tool.isort]
+profile = 'black'
