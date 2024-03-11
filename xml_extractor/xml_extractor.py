@@ -7,13 +7,30 @@ from lxml import etree
 
 @dataclass
 class XmlETExtractor:
+    """
+    this package is used for to learn data extraction from XML file
+    """
 
     @staticmethod
-    def get_root(path: str) -> List[pd.DataFrame]:
+    def xml_extractor(xml_template_path: str) -> List[pd.DataFrame]:
+        """
+        extract data from xml in list of data frame
+        Args:
+            xml_template_path: xml file path
+
+        Returns: List[pd.DataFrame]
+
+        """
+        if xml_template_path.lower().split(".")[-1] != "xml":
+            raise Exception("Error: Wrong file type")
+        else:
+            pass
+
         publication_reference = pd.DataFrame()
         application_reference = pd.DataFrame()
         text_data = pd.DataFrame()
-        with open(path, "r", encoding="utf-8") as file:
+
+        with open(xml_template_path, "r", encoding="utf-8") as file:
             contents = file.read()
             xml_documents = contents.split('<?xml version="1.0" encoding="UTF-8"?>')
 
