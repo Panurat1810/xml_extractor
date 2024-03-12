@@ -1,7 +1,7 @@
 import unittest
+from typing import NoReturn
 from unittest.mock import mock_open, patch
 from xml.etree import ElementTree as etree
-from typing import NoReturn
 
 import pandas as pd
 

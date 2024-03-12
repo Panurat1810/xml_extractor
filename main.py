@@ -1,9 +1,10 @@
-import glob
-
 from xml_extractor.xml_extractor import XmlETExtractor
 
-x = glob.glob("*.xml")
-for path in x:
-    data = XmlETExtractor.xml_extractor(path)
-    for dataframe in data:
-        print(dataframe.head())
+path: str = "C://Users//PanuratSangchai(Tar)//xml_extractor//COVID-19 CLinical trials studies//NCT00571389.xml"
+x = XmlETExtractor.xml_extractor(path)
+counter = 0
+for y in x:
+    print(y)
+    counter += 1
+    if counter == 10:
+        break
