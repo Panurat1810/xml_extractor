@@ -1,0 +1,76 @@
+{
+  "sample_book": {
+        "book": {
+          "id": "",
+          "title": "",
+          "isbn": "",
+          "isbn13": "",
+          "asin": "",
+          "kindle_asin": "",
+          "marketplace_id": "",
+          "country_code": "",
+          "image_url": "",
+          "small_image_url": "",
+          "publication_year": "",
+          "publication_month": "",
+          "publication_day": "",
+          "publisher": "",
+          "language_code": "",
+          "is_ebook": "",
+          "description": ""
+        },
+      "Request": {
+        "authentication": "",
+        "key": "",
+        "method": ""
+      },
+      "book/work": {
+        "id": "",
+        "books_count": "",
+        "best_book_id": "",
+        "reviews_count": "",
+        "ratings_sum": "",
+        "ratings_count": "",
+        "text_reviews_count": "",
+        "original_publication_year": "",
+        "original_publication_month": "",
+        "original_publication_day": "",
+        "original_title": "",
+        "original_language_id": "",
+        "media_type": "",
+        "rating_dist": "",
+        "desc_user_id": "",
+        "default_chaptering_book": "",
+        "default_description_language_code": ""
+      },
+      "book/similar_books/book": {
+        "id": "",
+        "title": "",
+        "title_without_series": "",
+        "link": "",
+        "small_image_url": "",
+        "image_url": "",
+        "num_pages": "",
+        "isbn": "",
+        "isbn13": "",
+        "average_rating": "",
+        "ratings_count": "",
+        "publication_year": "",
+        "publication_month": "",
+        "publication_day": ""
+
+      },
+      "book/similar_books/book/work": {
+        "id": ""
+      },
+      "book/similar_books/book/work/authors/author": {
+        "id": "",
+        "name": "",
+        "link": ""
+      },
+      "book/popular_shelves/shelf" : {
+        "name": "",
+        "count": ""
+      }
+  }
+}
