@@ -1,24 +1,28 @@
 {
-  "sample_book": {
-        "book": {
-          "id": "",
-          "title": "",
-          "isbn": "",
-          "isbn13": "",
-          "asin": "",
-          "kindle_asin": "",
-          "marketplace_id": "",
-          "country_code": "",
-          "image_url": "",
-          "small_image_url": "",
-          "publication_year": "",
-          "publication_month": "",
-          "publication_day": "",
-          "publisher": "",
-          "language_code": "",
-          "is_ebook": "",
-          "description": ""
-        },
+  "main_node": "",
+  "sub_node": "",
+  "key_tag": "",
+  "template": {
+    "sample_book": {
+      "book": {
+        "id": "",
+        "title": "attribute",
+        "isbn": "",
+        "isbn13": "",
+        "asin": "",
+        "kindle_asin": "",
+        "marketplace_id": "",
+        "country_code": "",
+        "image_url": "",
+        "small_image_url": "",
+        "publication_year": "",
+        "publication_month": "",
+        "publication_day": "",
+        "publisher": "",
+        "language_code": "",
+        "is_ebook": "",
+        "description": ""
+      },
       "Request": {
         "authentication": "",
         "key": "",
@@ -58,7 +62,6 @@
         "publication_year": "",
         "publication_month": "",
         "publication_day": ""
-
       },
       "book/similar_books/book/work": {
         "id": ""
@@ -68,9 +71,10 @@
         "name": "",
         "link": ""
       },
-      "book/popular_shelves/shelf" : {
+      "book/popular_shelves/shelf": {
         "name": "",
         "count": ""
       }
+    }
   }
 }

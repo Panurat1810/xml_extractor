@@ -4,7 +4,7 @@ from typing import Dict, List, Tuple, Union
 import pandas as pd
 from lxml import etree
 import os
-from xml_extractor.config import xml_template_path, main_node, sub_node, key_tag
+from xml_extractor.const import xml_template_path, main_node, sub_node, key_tag
 
 
 @dataclass
@@ -13,8 +13,8 @@ class XmlETExtractor:
     this package is used for to learn data extraction from XML file
     """
 
-    @staticmethod
-    def xml_extractor() -> 'XmlETExtractor':
+    @classmethod
+    def xml_extractor(cls) -> 'XmlETExtractor':
         """
         extract data from xml in list of data frame
         Args:
@@ -91,6 +91,12 @@ class XmlETExtractor:
 
         return instance
 
+    def read_xml(self):
+        pass
+
+    def is_xml_contents(self) -> bool:
+        pass
+
     @staticmethod
     def config() -> Dict or Tuple:
         with open(os.path.join(os.path.dirname(__file__), "config.json")) as file:
@@ -107,6 +113,9 @@ class XmlETExtractor:
             if config_data:
                 for key, val in config_data.items():
                     elem = child.find(key)
+                    # check val is value or attribute
+                    # if value -> extract value
+                    # if attribute -> extract attribute
                     if elem is not None:
                         data[key] = elem.text
                     else:
