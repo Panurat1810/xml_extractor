@@ -23,14 +23,14 @@ class XmlETExtractor:
     @classmethod
     def xml_extractor(cls, xml_template_path: str) -> "XmlETExtractor":
         """
-        extract data from xml in list of data frame
+        extract data from xml and store it in class variable
         Args:
+            xml_template_path: path of xml file
 
 
         Returns: List of Dict
 
         """
-
         if XmlETExtractor.is_xml_contents(xml_template_path) is True:
             pass
         temp_main_result = []
@@ -93,6 +93,14 @@ class XmlETExtractor:
 
     @staticmethod
     def read_xml(xml_template_path: str) -> str or List[str]:
+        """
+        read xml file and return it as string
+        Args:
+            xml_template_path: xml file path
+
+        Returns: xml file as string
+
+        """
         with open(xml_template_path) as file:
             content = file.read()
             if content.count("<?xml") > 1:
@@ -105,6 +113,14 @@ class XmlETExtractor:
 
     @staticmethod
     def is_xml_contents(xml_template_path: str) -> bool:
+        """
+        check if input value is xml file
+        Args:
+            xml_template_path: xml file path
+
+        Returns: boolean
+
+        """
         if xml_template_path.lower().split(".")[-1] != "xml":
             raise Exception("Error: Wrong file type")
         else:
@@ -112,6 +128,11 @@ class XmlETExtractor:
 
     @classmethod
     def get_config(cls) -> Dict:
+        """
+        get parameter from config.json, used to assign tag to extract
+        Returns:Dict template of targeted xml
+
+        """
         with open(config_path) as file:
             config = json.load(file)
             cls.main_node = config["main_node"]
@@ -121,6 +142,16 @@ class XmlETExtractor:
 
     @staticmethod
     def get_data(config_data: dict, root: etree.ElementTree, target_node: str) -> pd.DataFrame or None:
+        """
+        extract data from xml file
+        Args:
+            config_data: dict template of xml file
+            root: root of xml file
+            target_node: tag to extract
+
+        Returns: dataframe of data
+
+        """
         tag = root.findall(target_node)
         if not tag:
             return None
@@ -153,11 +184,12 @@ class XmlETExtractor:
     @staticmethod
     def to_parquet(data: pd.DataFrame, node: str) -> NoReturn:
         """
-        This method is to format a table of extracted data to CSV
+        This method is to format a table of extracted data to parquet
         Args:
-            table:extracted data of exchange rate
+            data: targeted data frame
+            node: tag that data belong to, used to assign file name
 
-        Returns: none
+        Returns: No Return
 
         """
         try:
@@ -171,8 +203,17 @@ class XmlETExtractor:
             raise OSError
 
     def main_result_to_parquet(self) -> NoReturn:
+        """
+        callable function to extract convert main data to parquet
+        Returns: No Return
+
+        """
         self.to_parquet(self.main_result, self.main_node)
 
-    @classmethod
-    def sub_result_to_parquet(cls) -> NoReturn:
-        cls.to_parquet(cls.sub_result, cls.sub_node)
+    def sub_result_to_parquet(self) -> NoReturn:
+        """
+        callable function to extract convert sub data to parquet
+        Returns: No Return
+
+        """
+        self.to_parquet(self.sub_result, self.sub_node)
