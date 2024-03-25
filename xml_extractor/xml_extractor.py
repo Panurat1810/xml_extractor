@@ -1,7 +1,7 @@
 import json
 from dataclasses import dataclass
 from datetime import date
-from typing import Dict, List, NoReturn
+from typing import Dict, List, Tuple, NoReturn
 
 import pandas as pd
 from lxml import etree
@@ -28,41 +28,61 @@ class XmlETExtractor:
             xml_template_path: path of xml file
 
 
-        Returns: List of Dict
+        Returns: class
 
         """
-        if XmlETExtractor.is_xml_contents(xml_template_path) is True:
+        if XmlETExtractor.is_xml_content(xml_template_path) is True:
             pass
+        config = XmlETExtractor.get_config()
+        content = XmlETExtractor.get_xml_contents(xml_template_path)
+        if isinstance(content, list):
+            main_temp = []
+            sub_temp = []
+            for doc in content:
+                main, sub = XmlETExtractor.extract_data(xml_content=doc, config=config)
+                main_temp.append(main)
+                if cls.sub_node:
+                    sub_temp.append(sub)
+            cls.main_result = pd.concat(main_temp, ignore_index=True) if main_temp else None
+            cls.sub_result = pd.concat(sub_temp, ignore_index=True) if sub_temp else None
+        else:
+            main, sub = XmlETExtractor.extract_data(xml_content=content, config=config)
+            cls.main_result = main
+            if cls.sub_node:
+                cls.sub_result = sub
+
+        return XmlETExtractor(
+            main_node=cls.main_node,
+            sub_node=cls.sub_node,
+            key_tag=cls.key_tag,
+            main_result=cls.main_result,
+            sub_result=cls.sub_result if cls.sub_result else None
+        )
+
+    @classmethod
+    def extract_data(cls, xml_content: str, config: dict) -> Tuple:
+        """
+        take datas from get_data function, processed to data frame
+        Args:
+            xml_content: xml content in string
+            config: template of dict
+
+        Returns: main and sub result
+
+        """
         temp_main_result = []
         temp_sub_result = []
-        config = XmlETExtractor.get_config()
-        content = XmlETExtractor.read_xml(xml_template_path)
-        if isinstance(content, list):
-            for doc in content:
-                root = etree.fromstring(doc.encode())
-                main_data = XmlETExtractor.get_data(
-                    config_data=config[cls.main_node], root=root, target_node=cls.main_node
-                )
-                temp_main_result.append(main_data)
-                if cls.sub_node:
-                    sub_data = XmlETExtractor.get_data(
-                        config_data=config[cls.sub_node], root=root, target_node=cls.sub_node
-                    )
-                    try:
-                        key_col = main_data[cls.key_tag]
-                        main_node_key = cls.main_node.split("/")[-1] + "." + cls.key_tag
-                        sub_data[main_node_key] = key_col
-                        temp_sub_result.append(sub_data)
-                    except ValueError:
-                        raise Exception(f"there is no {cls.key_tag} in main node")
-        else:
-            root = etree.fromstring(content.encode())
-            main_data = XmlETExtractor.get_data(config_data=config[cls.main_node], root=root, target_node=cls.main_node)
+        root = etree.fromstring(xml_content.encode())
+        main_data = XmlETExtractor.get_data(config_data=config[cls.main_node],
+                                            root=root,
+                                            target_node=cls.main_node)
+        if main_data is not None:
             temp_main_result.append(main_data)
-            if cls.sub_node:
-                sub_data = XmlETExtractor.get_data(
-                    config_data=config[cls.sub_node], root=root, target_node=cls.sub_node
-                )
+        if cls.sub_node:
+            sub_data = XmlETExtractor.get_data(
+                config_data=config[cls.sub_node], root=root, target_node=cls.sub_node
+            )
+            if sub_data is not None:
                 try:
                     key_col = main_data[cls.key_tag]
                     main_node_key = cls.main_node.split("/")[-1] + "." + cls.key_tag
@@ -70,29 +90,12 @@ class XmlETExtractor:
                     temp_sub_result.append(sub_data)
                 except ValueError:
                     raise Exception(f"there is no {cls.key_tag} in main node")
-        cls.main_result = pd.concat(temp_main_result, ignore_index=True)
-        if temp_sub_result:
-            cls.sub_result = pd.concat(temp_sub_result, ignore_index=True)
-            instance = XmlETExtractor(
-                main_node=cls.main_node,
-                sub_node=cls.sub_node,
-                key_tag=cls.key_tag,
-                main_result=cls.main_result,
-                sub_result=cls.sub_result,
-            )
-            return instance
-        else:
-            instance = XmlETExtractor(
-                main_node=cls.main_node,
-                sub_node=cls.sub_node,
-                key_tag=cls.key_tag,
-                main_result=cls.main_result,
-                sub_result=None,
-            )
-            return instance
+        main_result = pd.concat(temp_main_result, ignore_index=True) if temp_main_result else None
+        sub_result = pd.concat(temp_sub_result, ignore_index=True) if temp_sub_result else None
+        return main_result,sub_result
 
     @staticmethod
-    def read_xml(xml_template_path: str) -> str or List[str]:
+    def get_xml_contents(xml_template_path: str) -> str or List[str]:
         """
         read xml file and return it as string
         Args:
@@ -112,7 +115,7 @@ class XmlETExtractor:
                 return content
 
     @staticmethod
-    def is_xml_contents(xml_template_path: str) -> bool:
+    def is_xml_content(xml_template_path: str) -> bool:
         """
         check if input value is xml file
         Args:
