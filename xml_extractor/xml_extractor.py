@@ -1,12 +1,12 @@
 import json
 from dataclasses import dataclass
 from datetime import date
-from typing import Dict, List, Tuple, NoReturn
+from typing import Dict, List, NoReturn, Tuple
 
 import pandas as pd
 from lxml import etree
 
-from xml_extractor.const import config_path, output_path
+from xml_extractor.const import output_path
 
 
 @dataclass
@@ -21,42 +21,37 @@ class XmlETExtractor:
     """
 
     @classmethod
-    def xml_extractor(cls, xml_template_path: str) -> "XmlETExtractor":
+    def xml_extractor(cls, xml_template_path: str, config_path: str) -> "XmlETExtractor":
         """
         extract data from xml and store it in class variable
         Args:
             xml_template_path: path of xml file
-
+            config_path: json config file path
 
         Returns: class
 
         """
         if XmlETExtractor.is_xml_content(xml_template_path) is True:
             pass
-        config = XmlETExtractor.get_config()
+        config = XmlETExtractor.get_config(config_path)
         content = XmlETExtractor.get_xml_contents(xml_template_path)
-        if isinstance(content, list):
-            main_temp = []
-            sub_temp = []
-            for doc in content:
-                main, sub = XmlETExtractor.extract_data(xml_content=doc, config=config)
-                main_temp.append(main)
-                if cls.sub_node:
-                    sub_temp.append(sub)
-            cls.main_result = pd.concat(main_temp, ignore_index=True) if main_temp else None
-            cls.sub_result = pd.concat(sub_temp, ignore_index=True) if sub_temp else None
-        else:
-            main, sub = XmlETExtractor.extract_data(xml_content=content, config=config)
-            cls.main_result = main
+
+        main_temp = []
+        sub_temp = []
+        for doc in content:
+            main, sub = XmlETExtractor.extract_data(xml_content=doc, config=config)
+            main_temp.append(main)
             if cls.sub_node:
-                cls.sub_result = sub
+                sub_temp.append(sub)
+        cls.main_result = pd.concat(main_temp, ignore_index=True) if main_temp else None
+        cls.sub_result = pd.concat(sub_temp, ignore_index=True) if sub_temp else None
 
         return XmlETExtractor(
             main_node=cls.main_node,
             sub_node=cls.sub_node,
             key_tag=cls.key_tag,
             main_result=cls.main_result,
-            sub_result=cls.sub_result if cls.sub_result else None
+            sub_result=cls.sub_result if cls.sub_result is not None else None,
         )
 
     @classmethod
@@ -73,15 +68,11 @@ class XmlETExtractor:
         temp_main_result = []
         temp_sub_result = []
         root = etree.fromstring(xml_content.encode())
-        main_data = XmlETExtractor.get_data(config_data=config[cls.main_node],
-                                            root=root,
-                                            target_node=cls.main_node)
+        main_data = XmlETExtractor.get_data(config_data=config[cls.main_node], root=root, target_node=cls.main_node)
         if main_data is not None:
             temp_main_result.append(main_data)
         if cls.sub_node:
-            sub_data = XmlETExtractor.get_data(
-                config_data=config[cls.sub_node], root=root, target_node=cls.sub_node
-            )
+            sub_data = XmlETExtractor.get_data(config_data=config[cls.sub_node], root=root, target_node=cls.sub_node)
             if sub_data is not None:
                 try:
                     key_col = main_data[cls.key_tag]
@@ -92,7 +83,7 @@ class XmlETExtractor:
                     raise Exception(f"there is no {cls.key_tag} in main node")
         main_result = pd.concat(temp_main_result, ignore_index=True) if temp_main_result else None
         sub_result = pd.concat(temp_sub_result, ignore_index=True) if temp_sub_result else None
-        return main_result,sub_result
+        return main_result, sub_result
 
     @staticmethod
     def get_xml_contents(xml_template_path: str) -> str or List[str]:
@@ -112,7 +103,7 @@ class XmlETExtractor:
                     xml_file[i] = "<?xml" + doc
                 return xml_file
             else:
-                return content
+                return [content]
 
     @staticmethod
     def is_xml_content(xml_template_path: str) -> bool:
@@ -130,7 +121,7 @@ class XmlETExtractor:
             return True
 
     @classmethod
-    def get_config(cls) -> Dict:
+    def get_config(cls, config_path: str) -> Dict:
         """
         get parameter from config.json, used to assign tag to extract
         Returns:Dict template of targeted xml
@@ -196,10 +187,10 @@ class XmlETExtractor:
 
         """
         try:
-            main_node_text: str = node.replace("/", "_")
+            node_text: str = node.replace("/", "_")
             datetime_suffix: str = date.today().strftime("%Y%m%d")
             data.to_parquet(
-                f"{output_path}{main_node_text}_{datetime_suffix}.parquet",
+                f"{output_path}{node_text}_{datetime_suffix}.parquet",
                 index=False,
             )
         except OSError:

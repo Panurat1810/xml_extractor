@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <item>
+        <name>Item 1</name>
+        <id>1</id>
+        <att test="True"/>
+
+    </item>
+    <item>
+        <name>Item 2</name>
+        <id>2</id>
+        <att test="True"/>
+    </item>
+</root>

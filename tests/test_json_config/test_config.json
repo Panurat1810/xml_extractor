@@ -1,0 +1,14 @@
+{
+  "main_node": "item",
+  "sub_node": "item/att",
+  "key_tag": "id",
+  "template": {
+    "item": {
+      "name": "value",
+      "id": "value"
+    },
+    "item/att": {
+      "test": "attribute"
+    }
+  }
+}
