@@ -4,7 +4,7 @@ out
 gen
 *.xml
 main.py
-*.json
+json_config/*.json
 *.parquet
 !tests/test_data/*.xml
 !tests/test_json_config/*.json
