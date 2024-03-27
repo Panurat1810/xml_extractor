@@ -1,0 +1,13 @@
+{
+  "main_node": "us-bibliographic-data-application/publication-reference/document-id",
+  "sub_node": "",
+  "key_tag": "id",
+  "template": {
+    "us-bibliographic-data-application/publication-reference/document-id": {
+      "country": "value",
+      "doc-number": "value",
+      "kind": "value",
+      "date": "value"
+    }
+  }
+}

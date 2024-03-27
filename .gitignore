@@ -1,9 +1,10 @@
-### Example user template template
-### Example user template
-
-# IntelliJ project files
 .idea
 *.iml
 out
 gen
 *.xml
+main.py
+json_config/*.json
+*.parquet
+!tests/test_data/*.xml
+!tests/test_json_config/*.json
