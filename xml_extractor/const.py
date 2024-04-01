@@ -1,3 +1,3 @@
 import os
-
-output_path = os.path.join(os.path.dirname(__file__), "../outputs/")
+from airflow.models import Variable
+output_path = Variable.get('OUTPUT')
