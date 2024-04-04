@@ -6,12 +6,12 @@ authors = ["Panurat Sangchai <52658155+Panurat1810@users.noreply.github.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "3.8.10"
+python = ">=3.8,<3.9"
 pandas = "^2.0.0"
 bs4 = "^0.0.2"
 lxml = "^5.1.0"
-pytest = "8.0.0"
-pyarrow = "15.0.0"
+pytest = "6.2.5"
+pyarrow = "^15.0.0"
 fastparquet = "^2024.2.0"
 
 
